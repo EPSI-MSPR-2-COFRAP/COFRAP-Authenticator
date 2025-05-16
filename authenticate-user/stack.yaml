@@ -1,0 +1,16 @@
+version: 1.0
+provider:
+  name: openfaas
+  gateway: http://127.0.0.1:8080
+functions:
+  authenticate-user:
+    lang: python3-http
+    handler: ./authenticate-user
+    image: saadkadiri/authenticate-user:latest
+    secrets:
+      - db-user
+      - db-pass
+      - db-name
+      - db-host
+      - db-port
+      - fernet-key

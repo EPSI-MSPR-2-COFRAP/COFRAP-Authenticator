@@ -131,3 +131,6 @@ Modifier
   "password": "uq3Tn3#F%M6Qr&-P+OhVGZYu",
   "qr_base64": "iVBORw0KGgo...etc..."
 }
+
+Lancer le front :
+python app.py

@@ -1,0 +1,16 @@
+version: 1.0
+provider:
+  name: openfaas
+  gateway: http://127.0.0.1:8080
+functions:
+  generate-2fa:
+    lang: python3-http
+    handler: ./generate-2fa
+    image: saadkadiri/generate-2fa:latest
+    secrets:
+      - db-user
+      - db-pass
+      - db-name
+      - db-host
+      - db-port
+      - fernet-key
