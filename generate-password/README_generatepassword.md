@@ -79,7 +79,7 @@ echo -n "faaspass" | faas-cli secret create db-pass --gateway http://127.0.0.1:[
 echo -n "usersdb" | faas-cli secret create db-name --gateway http://127.0.0.1:[PORT]  
 echo -n "postgres.openfaas-fn.svc.cluster.local" | faas-cli secret create db-host --gateway http://127.0.0.1:[PORT]  
 echo -n "5432" | faas-cli secret create db-port --gateway http://127.0.0.1:[PORT]  
-echo -n "[CLÉ_FERNET]" | faas-cli secret create fernet-key --gateway http://127.0.0.1:[PORT]  
+echo -n "HS-v7BUVUtuCYCZB--TxcM9y6j4Br7kxQd1csPvkGls=" | faas-cli secret create fernet-key --gateway http://127.0.0.1:[PORT]  
 </pre>
 NB : Utilisez la même clé Fernet dans toute l’équipe !
 
