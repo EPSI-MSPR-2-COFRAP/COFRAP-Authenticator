@@ -1,0 +1,28 @@
+version: 1.0
+provider:
+  name: openfaas
+  gateway: http://127.0.0.1:8080
+functions:
+  hello-pg:
+    lang: python3-http
+    handler: ./hello-pg
+    image: saadkadiri/hello-pg:latest
+    secrets:
+      - db-user
+      - db-pass
+      - db-name
+      - db-host
+      - db-port
+      
+  generate-password:
+    lang: python3-http
+    handler: ./generate-password
+    image: saadkadiri/generate-password:latest
+    secrets:
+      - db-user
+      - db-pass
+      - db-name
+      - db-host
+      - db-port
+      - fernet-key
+
