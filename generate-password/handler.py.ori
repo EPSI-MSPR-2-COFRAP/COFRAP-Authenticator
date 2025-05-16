@@ -1,0 +1,89 @@
+import json
+import os
+import random
+import string
+import base64
+import psycopg2
+import qrcode
+from cryptography.fernet import Fernet
+from io import BytesIO
+import time
+
+def generate_password(length=24):
+    """Génère un mot de passe complexe de la longueur demandée"""
+    chars = string.ascii_letters + string.digits + "!@#$%^&*()_-=+"
+    while True:
+        password = ''.join(random.choice(chars) for _ in range(length))
+        # Vérification : au moins une majuscule, minuscule, chiffre, caractère spécial
+        if (any(c.islower() for c in password)
+            and any(c.isupper() for c in password)
+            and any(c.isdigit() for c in password)
+            and any(c in "!@#$%^&*()_-=+" for c in password)):
+            return password
+
+def handle(event, context):
+    data = json.loads(event.body)
+    username = data.get("username")
+    if not username:
+        return "Paramètre username manquant", 400
+
+    # Génération mot de passe complexe
+    password = generate_password()
+    
+    # Générer le QR code du mot de passe (format image base64)
+    qr = qrcode.QRCode()
+    qr.add_data(password)
+    img = qr.make_image(fill_color="black", back_color="white")
+    buffered = BytesIO()
+    img.save(buffered, format="PNG")
+    qr_base64 = base64.b64encode(buffered.getvalue()).decode()
+
+    # Lire la clé Fernet depuis le secret
+    with open("/var/openfaas/secrets/fernet-key") as f:
+        key = f.read().strip()
+    fernet = Fernet(key)
+    password_encrypted = fernet.encrypt(password.encode()).decode()
+
+    # Connexion à la BDD (en utilisant les secrets)
+    db_user = open('/var/openfaas/secrets/db-user').read().strip()
+    db_pass = open('/var/openfaas/secrets/db-pass').read().strip()
+    db_name = open('/var/openfaas/secrets/db-name').read().strip()
+    db_host = open('/var/openfaas/secrets/db-host').read().strip()
+    db_port = open('/var/openfaas/secrets/db-port').read().strip()
+
+    conn = psycopg2.connect(
+        dbname=db_name,
+        user=db_user,
+        password=db_pass,
+        host=db_host,
+        port=db_port
+    )
+
+    # On stocke en base (mfa temporairement vide, à remplir avec la fonction 2FA)
+    gendate = int(time.time())
+    expired = False
+    mfa = ""  # La fonction "generate-2fa" remplira cette colonne
+
+    cur = conn.cursor()
+    try:
+        cur.execute("""
+            INSERT INTO users (username, password, mfa, gendate, expired)
+            VALUES (%s, %s, %s, %s, %s)
+            ON CONFLICT (username)
+            DO UPDATE SET password=EXCLUDED.password, gendate=EXCLUDED.gendate, expired=EXCLUDED.expired
+            """,
+            (username, password_encrypted, mfa, gendate, expired))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        return f"Erreur lors de l'écriture en base : {str(e)}", 500
+    finally:
+        cur.close()
+        conn.close()
+
+    # Retourne le QR code en base64 (et le mot de passe généré si tu veux le récupérer pour test)
+    return json.dumps({
+        "username": username,
+        "password": password,         # (pour test, à retirer en prod !)
+        "qr_base64": qr_base64
+    })
