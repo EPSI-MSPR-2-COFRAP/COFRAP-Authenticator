@@ -1,5 +1,5 @@
 # Projet MSPR 2 – COFRAP
-
+ 
 ## ✨ Objectif
 Ce projet a pour but de prototyper une solution d'authentification cloud s'appuyant sur des fonctions Serverless déployées sur Kubernetes avec OpenFaaS. Il s'agit d'une demande de l'entreprise COFRAP pour réduire les risques de compromission de comptes utilisateur.
 
