@@ -1,0 +1,1 @@
+# COFRAP-Authenticator
