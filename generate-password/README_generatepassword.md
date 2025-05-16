@@ -71,15 +71,15 @@ Note l’URL (ex : http://127.0.0.1:60408)
 
 8. Créer les secrets OpenFaaS  
 D’abord, connecte-toi à la gateway :  
-<pre>faas-cli login --username admin --password <MOT_DE_PASSE> --gateway http://127.0.0.1:<PORT></pre>
+<pre>faas-cli login --username admin --password [MOT_DE_PASSE] --gateway http://127.0.0.1:[PORT]</pre>
 Puis crée les secrets :  
 <pre>
-echo -n "faasuser" | faas-cli secret create db-user --gateway http://127.0.0.1:<PORT>  
-echo -n "faaspass" | faas-cli secret create db-pass --gateway http://127.0.0.1:<PORT>  
-echo -n "usersdb" | faas-cli secret create db-name --gateway http://127.0.0.1:<PORT>  
-echo -n "postgres.openfaas-fn.svc.cluster.local" | faas-cli secret create db-host --gateway http://127.0.0.1:<PORT>  
-echo -n "5432" | faas-cli secret create db-port --gateway http://127.0.0.1:<PORT>  
-echo -n "<CLÉ_FERNET>" | faas-cli secret create fernet-key --gateway http://127.0.0.1:<PORT>  
+echo -n "faasuser" | faas-cli secret create db-user --gateway http://127.0.0.1:[PORT]  
+echo -n "faaspass" | faas-cli secret create db-pass --gateway http://127.0.0.1:[PORT]  
+echo -n "usersdb" | faas-cli secret create db-name --gateway http://127.0.0.1:[PORT]  
+echo -n "postgres.openfaas-fn.svc.cluster.local" | faas-cli secret create db-host --gateway http://127.0.0.1:[PORT]  
+echo -n "5432" | faas-cli secret create db-port --gateway http://127.0.0.1:[PORT]  
+echo -n "<CLÉ_FERNET>" | faas-cli secret create fernet-key --gateway http://127.0.0.1:[PORT]  
 </pre>
 NB : Utilisez la même clé Fernet dans toute l’équipe !
 
@@ -91,19 +91,19 @@ Important : Copier le fichier requirements.txt dans le sous-dossier function/ 
 <pre>
 faas-cli build -f stack.yaml
 faas-cli push -f stack.yaml
-faas-cli deploy -f stack.yaml --gateway http://127.0.0.1:<PORT>  
+faas-cli deploy -f stack.yaml --gateway http://127.0.0.1:[PORT]  
 </pre>
 
 11. Tester la fonction  
 - Via l’interface web :  
-Rendez-vous sur http://127.0.0.1:<PORT>  
+Rendez-vous sur http://127.0.0.1:[PORT]  
 Cliquez sur la fonction generate-password  
 Entrez dans le body :   
 	<pre>{"username": "michel.ranu"}</pre>
 Cliquez sur “Invoke”  
 
 - Ou via la CLI :  
-<pre>echo '{"username": "michel.ranu"}' | faas-cli invoke generate-password --gateway http://127.0.0.1:<PORT></pre>
+<pre>echo '{"username": "michel.ranu"}' | faas-cli invoke generate-password --gateway http://127.0.0.1:[PORT]</pre>
 
 ## 📚 Fonctionnalités – Documentation
 Fonction generate-password  
