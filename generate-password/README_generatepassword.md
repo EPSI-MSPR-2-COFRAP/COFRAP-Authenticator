@@ -59,8 +59,10 @@ helm upgrade openfaas openfaas/openfaas --install --namespace openfaas --set bas
 <pre>[System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($(kubectl -n openfaas get secret basic-auth -o jsonpath="{.data.basic-auth-password}")))</pre>
 
 5. Ouvrir le dashboard OpenFaaS   
-<pre>minikube service gateway-external -n openfaas</pre>
-Note l’URL (ex : http://127.0.0.1:60408)  
+<pre>minikube service gateway-external -n openfaas
+ou 
+kubectl port-forward -n openfaas svc/gateway 8080:8080
+</pre>
 
 6. Installer faas-cli  
 <pre>curl -sSL https://cli.openfaas.com | sh</pre>
