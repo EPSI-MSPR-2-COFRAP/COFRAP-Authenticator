@@ -85,6 +85,8 @@ faas-cli push -f stack.yaml
 faas-cli deploy -f stack.yaml --gateway http://127.0.0.1:8080
 
 ### 9. **Lancer le frontend Flask**
-cd frontend
 pip install -r requirements.txt
+
 python app.py
+
+Aller sur http://127.0.0.1:5000/
